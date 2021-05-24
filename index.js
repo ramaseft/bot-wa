@@ -4,6 +4,7 @@ const qrcode = require("qrcode-terminal");
 const getData = require("./helper/gempa");
 const { data } = require("cheerio/lib/api/attributes");
 const base64img = require("./helper/base64img");
+const convertYtToMP3 = require("./helper/ytmp3");
 // Path where the session data will be stored
 const SESSION_FILE_PATH = "./session.json";
 
@@ -16,6 +17,13 @@ if (fs.existsSync(SESSION_FILE_PATH)) {
 // Use the saved values
 const client = new Client({
   session: sessionData,
+});
+
+new Client({
+  puppeteer: {
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-extensions"],
+  },
 });
 
 client.initialize();
@@ -85,6 +93,21 @@ client.on("message", async (message) => {
       const dataMedia = await base64img(dataGempa.image);
       const media = new MessageMedia(dataMedia.mimetype, dataMedia.data);
       await client.sendMessage(message.from, media, { caption: dataGempa.data });
+    } else if (message.body.startsWith("!ytmp3 ")) {
+      const url = message.body.split(" ")[1];
+      await message.reply("Please Wait . . .");
+      await convertYtToMP3(url)
+        .then((result) => {
+          message.reply(`[SUCCESS][YTMP3]
+Title : ${result.title}
+Bitrate : ${result.bitrate}
+Type File : ${result.type}
+Link Download : ${result.link}
+`);
+        })
+        .catch((err) => {
+          message.reply(`[FAILED][YTMP3] ${err.message}`);
+        });
     }
   } catch (error) {
     console.log(`[BOT] => Something Error`);

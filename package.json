@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@youka/lyrics": "^0.2.4",
     "axios": "^0.21.1",
     "cheerio": "^1.0.0-rc.9",
     "form-data": "^4.0.0",

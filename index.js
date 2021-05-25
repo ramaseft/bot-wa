@@ -4,7 +4,8 @@ const qrcode = require("qrcode-terminal");
 const getData = require("./helper/gempa");
 const { data } = require("cheerio/lib/api/attributes");
 const base64img = require("./helper/base64img");
-const convertYtToMP3 = require("./helper/ytmp3");
+const convertYtToMP3 = require("./helper/convertYt");
+const getLyrics = require("./helper/getLyrics");
 // Path where the session data will be stored
 const SESSION_FILE_PATH = "./session.json";
 
@@ -93,7 +94,7 @@ client.on("message", async (message) => {
     } else if (message.body.startsWith("!ytmp3 ")) {
       const url = message.body.split(" ")[1];
       await message.reply("Please Wait . . .");
-      await convertYtToMP3(url)
+      await convertYtToMP3(url, "mp3")
         .then((result) => {
           message.reply(`[SUCCESS][YTMP3]
 Title : ${result.title}
@@ -104,6 +105,30 @@ Link Download : ${result.link}
         })
         .catch((err) => {
           message.reply(`[FAILED][YTMP3] ${err.message}`);
+        });
+    } else if (message.body.startsWith("!ytmp4 ")) {
+      const url = message.body.split(" ")[1];
+      await message.reply("Please Wait . . .");
+      await convertYtToMP3(url, "mp4")
+        .then((result) => {
+          message.reply(`[SUCCESS][YTMP4]
+Title : ${result.title}
+Bitrate : ${result.bitrate}
+Type File : ${result.type}
+Link Download : ${result.link}
+`);
+        })
+        .catch((err) => {
+          message.reply(`[FAILED][YTMP4] ${err.message}`);
+        });
+    } else if (message.body.startsWith("!lyrics ")) {
+      const query = message.body.slice(8);
+      await getLyrics(query)
+        .then((result) => {
+          message.reply(result);
+        })
+        .catch((err) => {
+          message.reply(err);
         });
     }
   } catch (error) {

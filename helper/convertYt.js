@@ -2,11 +2,11 @@ const { default: axios } = require("axios");
 const FormData = require("form-data");
 const getShortLink = require("./shortlink");
 
-const getDataRequest = (url) =>
+const getDataRequest = (url, type) =>
   new Promise((resolve, reject) => {
     const data = new FormData();
     data.append("q", url);
-    data.append("vt", "mp3");
+    data.append("vt", type);
     axios
       .post(`https://yt1s.com/api/ajaxSearch/index`, data, {
         headers: {
@@ -36,9 +36,9 @@ const getDataDownload = (vid, k) =>
       .catch(() => reject("Internal Server Error"));
   });
 
-const convertYtToMP3 = (url) =>
+const convertYt = (url, type) =>
   new Promise((resolve, reject) => {
-    getDataRequest(url)
+    getDataRequest(url, type)
       .then((resultData) => {
         if (!resultData.mess) {
           getDataDownload(resultData.vid, resultData.kc)
@@ -68,4 +68,4 @@ const convertYtToMP3 = (url) =>
       .catch(() => reject({ success: false, message: "Please Input Valid URL" }));
   });
 
-module.exports = convertYtToMP3;
+module.exports = convertYt;

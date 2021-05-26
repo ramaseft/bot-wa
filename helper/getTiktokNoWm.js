@@ -5,7 +5,7 @@ const TikTokScraper = require("tiktok-scraper");
 const getShortLink = require("./shortlink");
 
 const parseLink = (urlShare) =>
-  new Promise((resolve, reject) => {
+  new Promise(async (resolve, reject) => {
     const options = {
       noWaterMark: false,
       hdVideo: false,

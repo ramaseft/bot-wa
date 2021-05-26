@@ -1,22 +1,23 @@
 const { default: axios } = require("axios");
 const cheerio = require("cheerio");
 const FormData = require("form-data");
+const TikTokScraper = require("tiktok-scraper");
 const getShortLink = require("./shortlink");
 
 const parseLink = (urlShare) =>
   new Promise((resolve, reject) => {
-    axios
-      .get(urlShare)
-      .then((result) => {
-        resolve(
-          result.data
-            .split('<link data-react-helmet="true" rel="canonical" href="')[1]
-            .split('"')[0]
-        );
-      })
-      .catch(() => {
-        reject("Internal Server Error");
-      });
+    const options = {
+      noWaterMark: false,
+      hdVideo: false,
+    };
+    try {
+      const videoMeta = await TikTokScraper.getVideoMeta(urlShare, options);
+      resolve(
+        `https://www.tiktok.com/@${videoMeta.collector[0].authorMeta.name}/video/${videoMeta.collector[0].id}`
+      );
+    } catch (error) {
+      reject(error);
+    }
   });
 
 const getCookie = (url) =>

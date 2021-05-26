@@ -6,6 +6,7 @@ const { data } = require("cheerio/lib/api/attributes");
 const base64img = require("./helper/base64img");
 const convertYtToMP3 = require("./helper/convertYt");
 const getLyrics = require("./helper/getLyrics");
+const getDownloadLink = require("./helper/getTiktokNoWm");
 // Path where the session data will be stored
 const SESSION_FILE_PATH = "./session.json";
 
@@ -129,6 +130,18 @@ Link Download : ${result.link}
         })
         .catch((err) => {
           message.reply(err);
+        });
+    } else if (message.body.startsWith("!tt ")) {
+      const url = message.body.split(" ")[1];
+      await message.reply("Please wait . . .");
+      await getDownloadLink(url)
+        .then((result) => {
+          message.reply(`[SUCCESS][TIKTOK NO WM]
+Download : ${result.link}`);
+        })
+        .catch((err) => {
+          message.reply(`[FAILED][TIKTOK NO WM]
+Reason : ${err.message}`);
         });
     }
   } catch (error) {

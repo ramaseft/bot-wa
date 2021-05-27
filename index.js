@@ -7,6 +7,7 @@ const base64img = require("./helper/base64img");
 const convertYtToMP3 = require("./helper/convertYt");
 const getLyrics = require("./helper/getLyrics");
 const getDownloadLink = require("./helper/getTiktokNoWm");
+const getDataDownload = require("./helper/getInsta");
 // Path where the session data will be stored
 const SESSION_FILE_PATH = "./session.json";
 
@@ -59,7 +60,7 @@ client.on("message", async (message) => {
   try {
     const chat = await message.getChat();
     if (message.body === "!status") {
-      message.reply("[BOT] ACTIVE");
+      message.reply("[🤖] ACTIVE");
     } else if (chat.isGroup && message.body === "!everyone") {
       const checkAdmins = await checkAdmin(chat.groupMetadata.participants, message.author);
       if (checkAdmins) {
@@ -143,6 +144,38 @@ Download : ${result.link}`);
           message.reply(`[FAILED][TIKTOK NO WM]
 Reason : ${err.message}`);
         });
+    } else if (message.body.startsWith("!igv ")) {
+      await message.reply("Please wait . . .");
+      await getDataDownload(message.body.split(" ")[1], "video")
+        .then((result) => {
+          message.reply(`[SUCCESS][IG VIDEO]
+Download : ${result}`);
+        })
+        .catch((err) => {
+          message.reply(`[FAILED][IG VIDEO]
+Reason : ${err}`);
+        });
+    } else if (message.body.startsWith("!igp ")) {
+      await message.reply("Please wait . . .");
+      await getDataDownload(message.body.split(" ")[1], "photo")
+        .then((result) => {
+          message.reply(`[SUCCESS][IG PHOTO]
+Download : ${result}`);
+        })
+        .catch((err) => {
+          message.reply(`[FAILED][IG PHOTO]
+Reason : ${err}`);
+        });
+    } else if (message.body === "!menu" || message.body === "!help") {
+      message.reply(`[🤖] Lists Menu
+
+{image} + !sticker = Create Sticker
+!ytmp3 {url} = Get Link Download YT Music
+!ytmp4 {url} = Get Link Download YT Video
+!lyrics {keyword} = Get Lyrics With Keyword
+!tt {url} = Get Link Download Tiktok Without WM
+!igv {url} = Get Link Download Instagram Video
+!igp {url} = Get Link Download Instagram Photo`);
     }
   } catch (error) {
     console.log(`[BOT] => Something Error`);

@@ -191,7 +191,8 @@ Download : ${result.data}`
 !lyrics {keyword} = Get Lyrics With Keyword
 !tt {url} = Get Link Download Tiktok Without WM
 !igv {url} = Get Link Download Instagram Video
-!igp {url} = Get Link Download Instagram Photo`);
+!igp {url} = Get Link Download Instagram Photo
+!igs {username} {sequence of stories} = Get Stories Instagram`);
     }
   } catch (error) {
     console.log(`[BOT] => Something Error`);

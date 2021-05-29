@@ -171,16 +171,12 @@ Reason : ${err}`);
       const num = message.body.split(" ")[2];
       await getStories(uname, num).then((result) => {
         if (result.type === "image") {
-          client.sendMessage(
-            chat.isGroup ? message.author : message.from,
-            new MessageMedia(result.mimetype, result.data),
-            {
-              caption: `[SUCCESS][IG STORIES]`,
-            }
-          );
+          client.sendMessage(message.from, new MessageMedia(result.mimetype, result.data), {
+            caption: `[SUCCESS][IG STORIES]`,
+          });
         } else {
           client.sendMessage(
-            chat.isGroup ? message.author : message.from,
+            message.from,
             `[SUCCESS][IG STORIES]
 Download : ${result.data}`
           );

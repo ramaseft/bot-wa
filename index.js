@@ -7,7 +7,7 @@ const base64img = require("./helper/base64img");
 const convertYtToMP3 = require("./helper/convertYt");
 const getLyrics = require("./helper/getLyrics");
 const getDownloadLink = require("./helper/getTiktokNoWm");
-const getDataDownload = require("./helper/getInsta");
+const { getDataDownload, getStories } = require("./helper/getInsta");
 // Path where the session data will be stored
 const SESSION_FILE_PATH = "./session.json";
 
@@ -166,6 +166,22 @@ Download : ${result}`);
           message.reply(`[FAILED][IG PHOTO]
 Reason : ${err}`);
         });
+    } else if (message.body.startsWith("!igs ")) {
+      const uname = message.body.split(" ")[1];
+      const num = message.body.split(" ")[2];
+      await getStories(uname, num).then((result) => {
+        if (result.type === "image") {
+          client.sendMessage(message.author, new MessageMedia(result.mimetype, result.data), {
+            caption: `[SUCCESS][IG STORIES]`,
+          });
+        } else {
+          client.sendMessage(
+            message.author,
+            `[SUCCESS][IG STORIES]
+Download : ${result.data}`
+          );
+        }
+      });
     } else if (message.body === "!menu" || message.body === "!help") {
       message.reply(`[🤖] Lists Menu
 
